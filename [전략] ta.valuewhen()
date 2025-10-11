@@ -1,0 +1,8 @@
+strategy('ta.valuewhen()', overlay = true)
+// 조건을 만족한 그 당시의 데이터를 가져오는 Function
+// RSI가 30을 아래로 돌파한 그 당시의 저가를 가져오고 싶엉
+rsi = ta.rsi(close, 14)
+under30 = ta.crossunder(rsi, 30)	// return true or false
+bgcolor(under30 ? color.rgb(255, 82, 82, 74) : na)
+under30_low = ta.valuewhen(under30, low, 0)
+plot(under30_low, color = color.red, linewidth = 2)

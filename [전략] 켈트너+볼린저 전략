@@ -1,0 +1,44 @@
+//@version=6
+strategy('켈트너+볼린저 전략', 'KC', overlay = true, process_orders_on_close = true, default_qty_type = strategy.percent_of_equity, default_qty_value = 100, initial_capital = 1000)
+
+// 0. 백테스팅 기간 설정
+start_time = input.time(timestamp('2024-01-01'), confirm = false)
+end_time = input.time(timestamp('2030-01-01'), confirm = false)
+is_backtesting = (time >= start_time) and (time <= end_time)
+bgcolor(is_backtesting ? color.rgb(120, 123, 134, 89) : na)
+
+// 1. 켈트너 채널 그리기
+lengthKC = input.int(20, '켈트너채널 길이')
+multiKC = input.float(1.5, '켈트널채널 멀티', step = 0.1)
+[middleKC, upperKC, lowerKC] = ta.kc(close, lengthKC, multiKC)
+plot(middleKC, color = color.blue)
+uKC = plot(upperKC, color = color.blue)
+lKC = plot(lowerKC, color = color.blue)
+fill(lKC, uKC, color = color.rgb(33, 149, 243, 90))
+
+// 2. 볼린저밴드 그리기
+lengthBB = input.int(20, '볼린저밴드 길이')
+multiBB = input.float(2, '볼린저밴드 멀티')
+[middleBB, upperBB, lowerBB] = ta.bb(close, lengthBB, multiBB)
+plot(middleBB, color = color.orange)
+uBB = plot(upperBB, color = color.orange)
+lBB = plot(lowerBB, color = color.orange)
+fill(lBB, uBB, color = color.rgb(199, 168, 33, 90))
+
+// 3. 전략 수립
+// 볼린저밴드가 켈트너채널보다 안에 있을 때 squeeze on
+sqzOn = lowerBB > lowerKC and upperBB < upperKC
+// 켈트너채널이 볼린저밴드보다 안에 있을 때 squeeze off
+sqzOff = lowerKC > lowerBB and upperKC < upperBB
+bgcolor(sqzOn ? color.rgb(255, 82, 82, 90) : na)
+bgcolor(sqzOff ? color.rgb(76, 175, 79, 90) : na)
+
+// 진입조건
+is_long = sqzOff
+is_close = not sqzOff
+
+if is_backtesting
+	if is_long
+		strategy.entry('롱', strategy.long)
+	if is_close
+		strategy.close('롱')

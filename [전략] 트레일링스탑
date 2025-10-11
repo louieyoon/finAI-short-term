@@ -1,0 +1,41 @@
+//@version=6
+strategy('트레일링스탑', overlay = true, process_orders_on_close = true, default_qty_type = strategy.percent_of_equity, default_qty_value = 100, initial_capital = 1000, commission_type = format.percent, commission_value = 0.04 )
+
+long_trail_percent = input.float(2.0, '롱 트레일') / 100
+long_stop_price = 0.0
+short_trail_percent = input.float(2.0, '숏 트레일') / 100
+short_stop_price = 99999.9
+
+rsi = ta.rsi(close, 14)
+if rsi < 30 and strategy.position_size == 0
+    strategy.entry('롱', strategy.long)
+    strategy.exit('스탑', '롱', stop = close * (1 - long_trail_percent))
+
+if rsi > 70 and strategy.position_size == 0
+    strategy.entry('숏', strategy.short)
+    strategy.exit('스탑', '숏', stop = close * (1 + short_trail_percent))
+
+// 트레일링 스탑
+if strategy.position_size > 0 // 롱 포지션이 있으면
+    stop_value = close * (1 - long_trail_percent)
+    long_stop_price := math.max(stop_value, long_stop_price[1])
+    long_stop_price
+else
+    long_stop_price := 0.0 // 롱 스탑을 무력화
+    long_stop_price
+
+if strategy.position_size < 0 // 숏 포지션이 있으면
+    stop_value = close * (1 + short_trail_percent)
+    short_stop_price := math.min(stop_value, short_stop_price[1])
+    short_stop_price
+else
+    short_stop_price := 99999.9 // 숏 스탑을 무력화
+    short_stop_price
+
+if strategy.position_size > 0
+    strategy.exit('스탑', '롱', stop = long_stop_price)
+if strategy.position_size < 0
+    strategy.exit('스탑', '숏', stop = short_stop_price)
+
+plot(strategy.position_size > 0 ? long_stop_price : na, style = plot.style_linebr, color = color.green, linewidth = 2)
+plot(strategy.position_size < 0 ? short_stop_price : na, style = plot.style_linebr, color = color.red, linewidth = 2)

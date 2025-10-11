@@ -1,0 +1,7 @@
+//@version=6
+//indicator("역대 최고가/최저가", overlay=true)
+strategy('역대 최고가/최저가', overlay = true)
+highest = ta.max(high) // high(고가)의 최대값
+lowest = ta.min(low) // low(저가)의 최소값
+plot(highest, color = color.green) // highest를 초록색 선으로 그리기
+plot(lowest, color = color.red) // lowest를 빨간색 선으로 그리기

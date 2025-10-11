@@ -1,0 +1,11 @@
+//@version=6
+indicator('Table script', overlay = true)
+var table myTable = table.new(position.top_right, 3, 2, border_width = 3)
+
+rsi = ta.rsi(close, 14)
+roc = ta.roc(close, 1)
+
+if barstate.islast
+    table.cell(myTable, column = 0, row = 0, text = '시가\n' + str.tostring(open), width = 6, bgcolor = color.green, text_color = color.white)
+    table.cell(myTable, column = 1, row = 0, text = 'rsi\n' + str.tostring(rsi, '#.#'), width = 6, bgcolor = color.red, text_color = color.white)
+    table.cell(myTable, column = 2, row = 0, text = 'roc\n' + str.tostring(roc, '#.##') + '%', width = 6, bgcolor = color.purple, text_color = color.white)

@@ -1,0 +1,17 @@
+//@version=6  
+strategy('백테스팅 기간 제한하기', overlay = true)  
+
+start_time = input.time(timestamp('2024-01-01'), confirm = false)
+end_time = input.time(timestamp('2030-01-01'), confirm = false)
+
+is_backtesting = (time >= start_time) and (time <= end_time)
+
+bgcolor(is_backtesting ? color.rgb(120, 123, 134, 89) : na)
+
+rsi = ta.rsi(close, 14)
+// plot(rsi)
+if is_backtesting
+    if rsi < 30
+        strategy.entry('롱', strategy.long)
+    if rsi > 70
+        strategy.close('롱')

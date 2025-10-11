@@ -1,0 +1,15 @@
+//@version=6
+strategy('수익에 따른 수량조절', default_qty_value = 0.5, overlay = true)
+// netprofit가 양수이면(수익이면) qty = 2    , 수량 2개로 늘리기
+// netprofit가 음수이면(손실이면) qty = 0.5  , 수량 0.5개로 줄이기
+
+entry_qty = 1.0 	// 처음에는 qty = 1
+if strategy.netprofit > 0
+    entry_qty := 2.0
+    entry_qty
+else if strategy.netprofit < 0
+    entry_qty := 0.5
+    entry_qty
+
+strategy.entry('Long', strategy.long, qty = entry_qty)
+strategy.close('Long', qty_percent = 50)

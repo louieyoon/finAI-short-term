@@ -1,0 +1,45 @@
+//@version=6
+strategy("지정가 분할 진입 및 분할 종료의 독립적 방법론", overlay=true, process_orders_on_close = true, initial_capital = 1000)
+
+// 아이디(id) 설정
+entry_id1 = "진입1"
+entry_id2 = "진입2"
+exit_id1 = "종료1"
+exit_id2 = "종료2"
+exit_limit_id1 = "익절1"
+exit_limit_id2 = "익절2"
+exit_stop_id1 = "손절1"
+exit_stop_id2 = "손절2"
+
+// 진입 및 손익절 변수 설정
+var entry_price1 = float(na)
+var entry_price2 = float(na)
+var exit_limit_price1 = float(na)
+var exit_limit_price2 = float(na)
+var exit_stop_price1 = float(na)
+var exit_stop_price2 = float(na)
+
+// 진입 트리거 조건
+[supertend, direction] = ta.supertrend(3, 10)
+is_long = direction < 0
+
+if is_long and strategy.position_size == 0
+    entry_price1 := close * 0.98
+    entry_price2 := close * 0.96
+    exit_limit_price1 := entry_price1 * 1.04
+    exit_limit_price2 := entry_price2 * 1.08
+    exit_stop_price1 := entry_price1 * 0.96
+    exit_stop_price2 := entry_price2 * 0.92
+    strategy.entry(entry_id1, strategy.long, limit = entry_price1, qty = strategy.equity/entry_price1 * 0.5)
+    strategy.entry(entry_id2, strategy.long, limit = entry_price2, qty = strategy.equity/entry_price2 * 0.5)
+    strategy.exit(exit_id1, entry_id1, limit = exit_limit_price1, stop = exit_stop_price1, comment_profit = exit_limit_id1, comment_loss = exit_stop_id1)
+    strategy.exit(exit_id2, entry_id2, limit = exit_limit_price2, stop = exit_stop_price2, comment_profit = exit_limit_id2, comment_loss = exit_stop_id2)
+
+
+// Drawing
+plot(strategy.position_size != 0 ? entry_price1 : na, style = plot.style_linebr, color = color.white, linewidth = 1)
+plot(strategy.position_size != 0 ? entry_price2 : na, style = plot.style_linebr, color = color.white, linewidth = 2)
+plot(strategy.position_size != 0 ? exit_limit_price1 : na, style = plot.style_linebr, color = color.green, linewidth = 1)
+plot(strategy.position_size != 0 ? exit_limit_price2 : na, style = plot.style_linebr, color = color.green, linewidth = 2)
+plot(strategy.position_size != 0 ? exit_stop_price1 : na, style = plot.style_linebr, color = color.red, linewidth = 1)
+plot(strategy.position_size != 0 ? exit_stop_price2 : na, style = plot.style_linebr, color = color.red, linewidth = 2)

@@ -1,0 +1,14 @@
+//@version=6
+strategy("분할 종료 - close", overlay = false)
+
+// 진입 | 종료 조건
+rsi = ta.rsi(close, 14)
+is_long = ta.crossunder(rsi, 30)
+is_long_close = ta.crossover(rsi, 70)
+
+// 진입함수
+if is_long
+    strategy.entry("롱", strategy.long)
+// 종료함수
+if is_long_close
+    strategy.close("롱", qty_percent = 100/(2-strategy.closedtrades%2))  //2분할 종료 

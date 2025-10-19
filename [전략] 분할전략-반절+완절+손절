@@ -1,0 +1,32 @@
+
+//@version=6
+strategy("분할전략-반절+완절+손절", 
+ overlay=true,
+ default_qty_type = strategy.cash,
+ default_qty_value = 100000,
+ process_orders_on_close = true)
+
+[middle, upper, lower] = ta.bb(close, 200, 3)
+plot(middle, color=color.yellow)
+plot(upper, color=color.yellow)
+plot(lower, color=color.yellow)
+
+// 진입 | 종료 조건
+is_long = ta.crossover(low, lower)
+is_middle_close = ta.crossover(close, middle)   // 반절
+is_upper_close = ta.crossover(high, upper)      // 완절
+
+recent_entry_bar_index = strategy.opentrades.entry_bar_index(strategy.opentrades-1)
+recent_exit_bar_index = strategy.closedtrades.exit_bar_index(strategy.closedtrades-1)
+recent_exit_bar_comment = strategy.closedtrades.exit_comment(strategy.closedtrades-1)
+distance = bar_index - recent_exit_bar_index
+distance2 = bar_index - recent_entry_bar_index
+if is_long and  (distance > 20 or strategy.closedtrades == 0)
+    strategy.entry("롱", strategy.long)
+if is_middle_close  and recent_exit_bar_comment != "반절"
+    strategy.close("롱", qty_percent = distance2 > 120 ? 100 : 50, comment = distance2 > 120 ? "완절" : "반절")
+if is_upper_close
+    strategy.close("롱", comment = "완절")
+
+if strategy.position_size == 0
+    strategy.exit("손절", "롱", stop = close * 0.97)

@@ -1,0 +1,264 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © dokang
+
+//@version=5
+
+// @description This library provides various functions to reduce your time.
+library("PineHelper", overlay = true)
+
+// @function            get a recent opentrade entry bar_index
+// @returns             (int) bar_index
+export recent_opentrade_entry_bar_index() =>
+    strategy.opentrades != 0 ? strategy.opentrades.entry_bar_index(strategy.opentrades-1) : na
+    
+// @function            get a recent closedtrade entry bar_index
+// @returns             (int) bar_index
+export recent_closedtrade_entry_bar_index() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.entry_bar_index(strategy.closedtrades-1) : na
+    
+// @function            get a recent closedtrade exit bar_index
+// @returns             (int) bar_index
+export recent_closedtrade_exit_bar_index() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.exit_bar_index(strategy.closedtrades-1) : na
+
+// @function            get all aopentrades roi
+// @returns             (float) roi
+export all_opnetrades_roi() =>
+    strategy.opentrades != 0 ? strategy.openprofit/strategy.position_avg_price*100 : na
+
+
+// @function            get bars since recent opentrade entry
+// @returns             (int) number of bars
+export bars_since_recent_opentrade_entry() =>
+    strategy.opentrades != 0 ? (bar_index - strategy.opentrades.entry_bar_index(strategy.opentrades-1)) : na
+
+// @function            get bars since recent closedtrade entry
+// @returns             (int) number of bars
+export bars_since_recent_closedtrade_entry() =>
+    strategy.closedtrades != 0 ? (bar_index - strategy.closedtrades.entry_bar_index(strategy.closedtrades-1)) : na
+
+// @function            get bars since recent closedtrade exit
+// @returns             (int) number of bars
+export bars_since_recent_closedtrade_exit() =>
+    strategy.closedtrades != 0 ? (bar_index - strategy.closedtrades.exit_bar_index(strategy.closedtrades-1)) : na
+
+// @function            get recent opentrade entry ID
+// @returns             (string) entry ID
+export recent_opentrade_entry_id() => 
+    strategy.opentrades != 0 ? strategy.opentrades.entry_id(strategy.opentrades-1) : na
+
+// @function            get recent closedtrade entry ID
+// @returns             (string) entry ID
+export recent_closedtrade_entry_id() => 
+    strategy.closedtrades != 0 ? strategy.closedtrades.entry_id(strategy.closedtrades-1) : na
+
+// @function            get recent closedtrade exit ID
+// @returns             (string) exit ID
+export recent_closedtrade_exit_id() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.exit_id(strategy.closedtrades-1) : na
+    
+// @function            get recent opentrade entry price
+// @returns             (float) price
+export recent_opentrade_entry_price() =>
+    strategy.opentrades != 0 ? strategy.opentrades.entry_price(strategy.opentrades-1) : na
+// @function            get recent closedtrade entry price
+// @returns             (float) price
+export recent_closedtrade_entry_price() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.entry_price(strategy.closedtrades-1) : na
+// @function            get recent closedtrade exit price
+// @returns             (float) price
+export recent_closedtrade_exit_price() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.exit_price(strategy.closedtrades-1) : na
+
+// @function            get recent opentrade entry time
+// @returns             (int) time 
+export recent_opentrade_entry_time() =>
+    strategy.opentrades != 0 ? strategy.opentrades.entry_time(strategy.opentrades-1) : na
+// @function            get recent closedtrade entry time
+// @returns             (int) time 
+export recent_closedtrade_entry_time() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.entry_time(strategy.closedtrades-1) : na
+// @function            get recent closedtrade exit time
+// @returns             (int) time 
+export recent_closedtrade_exit_time() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.exit_time(strategy.closedtrades-1) : na
+
+// @function            get time since recent opentrade entry
+// @returns             (int) time
+export time_since_recent_opentrade_entry() =>
+	strategy.opentrades != 0 ? (time - strategy.opentrades.entry_time(strategy.opentrades-1)) : na
+
+// @function            get time since recent closedtrade entry
+// @returns             (int) time 
+export time_since_recent_closedtrade_entry() =>
+	strategy.opentrades != 0 ? (time - strategy.closedtrades.entry_time(strategy.closedtrades-1)) : na
+
+// @function            get time since recent closedtrade exit
+// @returns             (int) time
+export time_since_recent_closedtrade_exit() =>
+    strategy.closedtrades != 0 ? (time -strategy.closedtrades.exit_time(strategy.closedtrades-1)) : na
+	
+// @function            get recent opentrade size
+// @returns             (float) size
+export recent_opentrade_size() =>
+    strategy.opentrades != 0 ? strategy.opentrades.size(strategy.opentrades-1) : na
+// @function            get recent closedtrade size
+// @returns             (float) size
+export recent_closedtrade_size() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.size(strategy.closedtrades-1) : na
+    
+// @function            get all opentrades size
+// @returns             (float) size
+export all_opentrades_size() =>
+    strategy.position_size != 0 ? math.abs(strategy.position_size) : na
+
+// @function            get recent opentrade profit
+// @returns             (float) profit
+export recent_opentrade_profit() =>
+    strategy.opentrades != 0 ? strategy.opentrades.profit(strategy.opentrades-1) : na
+
+// @function            get all opentrades profit
+// @returns             (float) profit
+export all_opentrades_profit() =>
+    strategy.opentrades != 0 ? strategy.openprofit : na
+
+// @function            get recent closedtrade profit
+// @returns             (float) profit
+export recent_closedtrade_profit() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.profit(strategy.closedtrades-1) : na
+
+// @function            get recent opentrade max runup
+// @returns             (float) runup
+export recent_opentrade_max_runup() =>
+    strategy.opentrades != 0 ? strategy.opentrades.max_runup(strategy.opentrades-1) : na
+
+// @function            get recent closedtrade max runup
+// @returns             (float) runup
+export recent_closedtrade_max_runup() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.max_runup(strategy.closedtrades-1) : na
+
+// @function            get recent opentrade maxdrawdown
+// @returns             (float) mdd
+export recent_opentrade_max_drawdown() =>
+    strategy.opentrades != 0 ? strategy.opentrades.max_drawdown(strategy.opentrades-1) : na
+    
+// @function            get recent closedtrade maxdrawdown
+// @returns             (float) mdd
+export recent_closedtrade_max_drawdown() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.max_drawdown(strategy.closedtrades-1) : na
+
+// @function            get max open trades drawdown
+// @returns             (float) mdd
+export max_open_trades_drawdown() =>
+    result = 0.
+    for i = 0 to strategy.opentrades-1
+        result := math.max(result, strategy.opentrades.max_drawdown(i))
+    result
+
+
+// @function            get recent opentrade commission
+// @returns             (float) commission
+export recent_opentrade_commission() =>
+    strategy.opentrades != 0 ? strategy.opentrades.commission(strategy.opentrades-1) : na
+// @function            get recent closedtrade commission
+// @returns             (float) commission
+export recent_closedtrade_commission() =>
+    strategy.closedtrades != 0 ? strategy.closedtrades.commission(strategy.closedtrades-1) : na
+
+// @function            get qty by percent of equtiy
+// @param percent       (series float) percent that you want to set 
+// @returns             (float) quantity
+export qty_by_percent_of_equity(series float percent) =>
+    strategy.equity/close * percent * 0.01
+
+// @function            get size by percent of position size
+// @param percent       (series float) percent that you want to set 
+// @returns             (float) size
+export qty_by_percent_of_position_size(series float percent) =>
+    math.abs(strategy.position_size) * percent * 0.01
+
+
+    
+// @function            get bool change of day
+// @returns             (bool) day is change or not
+export is_day_change() =>
+    ta.change(dayofweek) > 0 ? true : false
+
+// @function            get bool using number of bars
+// @returns             (bool) allowedToTrade
+export is_in_trade(int numberOfBars) =>
+    var lastbar = last_bar_index
+    allowedToTrade = (lastbar - bar_index <= numberOfBars) or barstate.isrealtime
+    allowedToTrade
+
+is_leap_year(_year) =>
+    (_year % 100 == 0) and (_year % 400 != 0) ? true : (_year % 4 == 0)
+
+daysInMonth(_year, _month) =>
+    int dpm = na
+    if _month == 2
+        dpm := 28 + (is_leap_year(_year) ? 1 : 0)
+    else 
+        evenMonth = _month % 2 == 0
+        beforeAug = _month < 8
+        dpm := 30 + (((not evenMonth and beforeAug) or (evenMonth and not beforeAug)) ? 1 : 0)
+
+// @function            Check if today is the first day
+// @returns             (bool) true if today is the first day, false otherwise
+export is_first_day() =>
+    dayofmonth(time) == 1
+
+// @function            Check if today is the last day
+// @returns             (bool) true if today is the last day, false otherwise
+export is_last_day() =>
+    dayofmonth(time) == daysInMonth(year, month)
+
+// @function            Check if trade is open
+// @returns             (bool) true if trade is open, false otherwise
+export is_entry() =>
+    ta.change(strategy.opentrades) > 0
+
+// @function            Check if trade is closed
+// @returns             (bool) true if trade is closed, false otherwise
+export is_close() =>
+    ta.change(strategy.closedtrades) > 0
+
+// @function            Check if trade is win
+// @returns             (bool) true if trade is win, false otherwise
+export is_win() =>
+    ta.change(strategy.wintrades) > 0
+
+// @function            Check if trade is loss
+// @returns             (bool) true if trade is loss, false otherwise
+export is_loss() =>
+    ta.change(strategy.losstrades) > 0
+
+// @function            get json format discord message
+// @param name          (string) name of bot 
+// @param message       (string) message that you want to send
+// @returns             (string) json format string
+export discord_message(string name, string message) =>
+    json =  '{'
+             + str.format(
+             ' 
+                 "username":"{0}", 
+                 "content":"{1}"
+             ', name, message) 
+             +'}'
+    json
+
+
+// @function            get json format telegram message
+// @param chat_id       (string) chatId of bot
+// @param message       (string) message that you want to send
+// @returns             (string) json format string
+export telegram_message(string chat_id, string message) =>
+    // webhook url : https://api.telegram.org/bot{token}/sendMessage
+    json =  '{'
+             + str.format(
+             ' 
+                 "chat_id":"{0}", 
+                 "text":"{1}"
+             ', chat_id, message) 
+             +'}'
+    json
